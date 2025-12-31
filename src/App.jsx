@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react';
 import { motion } from 'framer-motion';
 import confetti from 'canvas-confetti';
+import { Analytics } from '@vercel/analytics/react';
 import Countdown from './components/Countdown';
 import WishesCard from './components/WishesCard';
 import GiftBox from './components/GiftBox';
@@ -172,6 +173,7 @@ function App() {
           May this year bring you endless joy, success, and unforgettable moments with your loved ones! 🥳
         </motion.p>
       </div>
+      <Analytics />
     </div>
   );
 }

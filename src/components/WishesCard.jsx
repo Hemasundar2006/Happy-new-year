@@ -126,6 +126,7 @@ const wishes = [
 const WishesCard = () => {
   const [currentWish, setCurrentWish] = useState(0);
   const [showCopied, setShowCopied] = useState(false);
+  const [showShared, setShowShared] = useState(false);
 
   const generateRandomWish = () => {
     let newIndex;
@@ -142,6 +143,27 @@ const WishesCard = () => {
       setTimeout(() => setShowCopied(false), 2000);
     } catch (err) {
       console.error('Failed to copy:', err);
+    }
+  };
+
+  const shareWish = async () => {
+    const shareText = `${wishes[currentWish]}\n\nCelebrate New Year 2026 with me! 🎉\nhttps://happynewyear-gray.vercel.app/`;
+    
+    try {
+      // Try using Web Share API if available (mobile devices)
+      if (navigator.share) {
+        await navigator.share({
+          title: 'Happy New Year 2026!',
+          text: shareText,
+        });
+      } else {
+        // Fallback to clipboard
+        await navigator.clipboard.writeText(shareText);
+        setShowShared(true);
+        setTimeout(() => setShowShared(false), 2000);
+      }
+    } catch (err) {
+      console.error('Failed to share:', err);
     }
   };
 
@@ -163,6 +185,18 @@ const WishesCard = () => {
           >
             <span className="text-lg">✓</span>
             <span className="font-semibold">Wishes Copied!</span>
+          </motion.div>
+        )}
+        
+        {showShared && (
+          <motion.div
+            initial={{ opacity: 0, y: -20 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: -20 }}
+            className="absolute top-4 right-4 bg-blue-500 text-white px-4 py-2 rounded-full shadow-lg flex items-center gap-2 z-10"
+          >
+            <span className="text-lg">🔗</span>
+            <span className="font-semibold">Link Copied to Share!</span>
           </motion.div>
         )}
       </AnimatePresence>
@@ -188,7 +222,7 @@ const WishesCard = () => {
         </div>
 
         {/* Buttons Container */}
-        <div className="flex flex-col sm:flex-row gap-3 sm:gap-4 justify-center items-center">
+        <div className="flex flex-col sm:flex-row gap-3 sm:gap-4 justify-center items-center flex-wrap">
           <button
             onClick={generateRandomWish}
             className="w-full sm:w-auto bg-gradient-to-r from-gold via-yellow-400 to-gold text-midnight px-6 sm:px-8 py-3 sm:py-4 rounded-full font-semibold text-base sm:text-lg hover:shadow-[0_0_30px_rgba(255,215,0,0.6)] transition-all duration-300 transform hover:scale-105 active:scale-95"
@@ -202,6 +236,14 @@ const WishesCard = () => {
           >
             <span>📋</span>
             <span>Copy Wish</span>
+          </button>
+          
+          <button
+            onClick={shareWish}
+            className="w-full sm:w-auto bg-gradient-to-r from-purple-500 to-pink-500 text-white px-6 sm:px-8 py-3 sm:py-4 rounded-full font-semibold text-base sm:text-lg hover:shadow-[0_0_30px_rgba(168,85,247,0.6)] transition-all duration-300 transform hover:scale-105 active:scale-95 flex items-center justify-center gap-2"
+          >
+            <span>🔗</span>
+            <span>Share</span>
           </button>
         </div>
       </motion.div>
